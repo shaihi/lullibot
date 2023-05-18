@@ -28,7 +28,7 @@ real_width = 30  # in centimeters (example value)
 
 traveled_distance = 0.0  # where we are on the rail ranges from 0 to 50 with 0.01 increments
 fast_increment = 6.69  # in cm. distance traveled with a FAST cmd
-fast_decrement = 6.57# backward step is 6.57 cm
+fast_decrement = 6.57 # backward step is 6.57 cm
 slow_increment = 0.85  # in cm. distance traveled with a SLOW cmd
 movement_direction = movementDirection.FORWARD  # initial state
 MAX_LENGTH = 60.0  # in cm - length of rails
@@ -112,12 +112,10 @@ def main():
                     'Class ID: {}, Object Width: {:.2f} cm, Distance: ??? cm'.format(class_id,
                         object_width)
                 class_name = net.GetClassDesc(detection.ClassID)
-                if class_name == 'kite' || class_name == 'chicken' || class_name == 'mouse':
+                if class_name == 'person':
                     print ('Found one! ' + class_name)
                     print ('Object width is: ' + str(object_width))
                     sendEngineCMD(engineCMD.STOP, ser)
-                    sleep(1000)
-                    continue
                 else:
 
                 # tell the motor to continue
