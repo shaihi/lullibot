@@ -27,8 +27,9 @@ image_width = 640  # in pixels (example value)
 real_width = 30  # in centimeters (example value)
 
 traveled_distance = 0.0  # where we are on the rail ranges from 0 to 50 with 0.01 increments
-fast_increment = 6.2  # in cm. distance traveled with a FAST cmd
-slow_increment = 0.5  # in cm. distance traveled with a SLOW cmd
+fast_increment = 6.69  # in cm. distance traveled with a FAST cmd
+fast_decrement = 6.57# backward step is 6.57 cm
+slow_increment = 0.85  # in cm. distance traveled with a SLOW cmd
 movement_direction = movementDirection.FORWARD  # initial state
 MAX_LENGTH = 60.0  # in cm - length of rails
 
@@ -44,7 +45,7 @@ def check_direction():
             print("changed direction to BACKWARD")
     if movement_direction == movementDirection.BACKWARD:
         print("checking if going beyond zero")
-        distance_now = traveled_distance - fast_increment
+        distance_now = traveled_distance - fast_decrement
         print("distance now is: " + str(distance_now))
         if distance_now < 1.0:
             print("entered condition to change direction")
@@ -74,7 +75,7 @@ def sendEngineCMD(cmd, ser):
         traveled_distance += slow_increment
     elif cmd == engineCMD.BCK_FAST:
         ser.write(bytes('B\n', 'utf-8'))
-        traveled_distance -= fast_increment
+        traveled_distance -= fast_decrement
     elif cmd == engineCMD.BCK_SLOW:
         ser.write(bytes('A\n', 'utf-8'))
         traveled_distance -= slow_increment
@@ -111,10 +112,12 @@ def main():
                     'Class ID: {}, Object Width: {:.2f} cm, Distance: ??? cm'.format(class_id,
                         object_width)
                 class_name = net.GetClassDesc(detection.ClassID)
-                if class_name == 'person':
+                if class_name == 'kite' || class_name == 'chicken' || class_name == 'mouse':
                     print ('Found one! ' + class_name)
                     print ('Object width is: ' + str(object_width))
                     sendEngineCMD(engineCMD.STOP, ser)
+                    sleep(1000)
+                    continue
                 else:
 
                 # tell the motor to continue
