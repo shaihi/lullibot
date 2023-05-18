@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-#define SLOW 20
-#define FAST 80
+#define SLOW_FWD 20
+#define FAST_FWD 80
+#define FAST_BCK 74
+#define SLOW_BCK 16
 
 const int motorPin = 9;  // Motor control pin
 Servo esc_1;
@@ -40,22 +42,22 @@ void loop() {
     }
     //Fast forward
     if (buffer[0] == 'F') {
-      set_esc_power(esc_1, FAST);
+      set_esc_power(esc_1, FAST_FWD);
       delay(500);
     }
     //Slow forward
     if (buffer[0] == 'O') {
-      set_esc_power(esc_1, SLOW);
+      set_esc_power(esc_1, SLOW_FWD);
       delay(500);
     }
     //Slow backward
     if (buffer[0] == 'A') {
-      set_esc_power(esc_1, -SLOW);
+      set_esc_power(esc_1, -SLOW_BCK);
       delay(500);
     }
     //Fast Backward
     if (buffer[0] == 'B') {
-      set_esc_power(esc_1, -FAST);
+      set_esc_power(esc_1, -FAST_BCK);
       delay(500);
     }
   }
