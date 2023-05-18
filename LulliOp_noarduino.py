@@ -27,8 +27,10 @@ image_width = 640  # in pixels (example value)
 real_width = 30  # in centimeters (example value)
 
 traveled_distance = 0.0  # where we are on the rail ranges from 0 to 50 with 0.01 increments
-fast_increment = 6.2  # in cm. distance traveled with a FAST cmd
-slow_increment = 0.5  # in cm. distance traveled with a SLOW cmd
+fast_increment = 6.5  # in cm. distance traveled with a FAST cmd
+slow_increment = 0.8  # in cm. distance traveled with a SLOW cmd
+#284 pixels are 12.4cm
+pixel_to_cm =  12.4/284 #(cm/pixel)
 movement_direction = movementDirection.FORWARD  # initial state
 MAX_LENGTH = 60.0  # in cm - length of rails
 
@@ -111,11 +113,17 @@ def main():
                 'Class ID: {}, Object Width: {:.2f} cm, Distance: ??? cm'.format(class_id,
                     object_width)
             class_name = net.GetClassDesc(detection.ClassID)
-            if class_name == 'person':
+            class_name = net.GetClassDesc(detection.ClassID)
+            if class_name == 'person' or class_name == 'mouse' or class_name ==$
                 print ('Found one! ' + class_name)
                 print ('Object width is: ' + str(object_width))
-                sendEngineCMD(engineCMD.STOP, ser)
+                print("obejct is " + str(center_y) + " pixels from top")
+                if (center_y*pixel_to_cm > 6):
+                    sendEngineCMD(engineCMD.STOP, ser)
+                    #now calculate how much to advance and take down the scoop
+                    time.sleep(1000)
             else:
+
 
             # tell the motor to continue
                 print("movement_direction: "+str(movement_direction))
