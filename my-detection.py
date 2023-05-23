@@ -6,13 +6,13 @@ focal_length = 500  # in pixels (example value)
 image_width = 640  # in pixels (example value)
 real_width = 30  # in centimeters (example value)
 
-net = jetson.inference.detectNet("ssd-mobilenet-v2", threshold=0.5)
+net = jetson.inference.detectNet("ssd-mobilenet-v2", threshold=0.35)
 camera = jetson.utils.videoSource("/dev/video0")      # '/dev/video0' for V4L2
 display = jetson.utils.videoOutput("display://0") # 'my_video.mp4' for file
 
 while display.IsStreaming():
     img = camera.Capture()
-    detections = net.Detect(img)
+    detections = net.Detect(img, overlay="lines,labels,conf")
     #print("ran detection on image")
     for detection in detections:
         class_id = detection.ClassID
