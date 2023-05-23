@@ -5,9 +5,12 @@
 #define FAST_FWD 80
 #define FAST_BCK 74
 #define SLOW_BCK 16
+#define STRING_FULL_TIME 1000 //milisceonds
 
 const int motorPin = 9;  // Motor control pin
+const int kanenetPin = 10; //Kannent motor
 Servo esc_1;
+Servo esc_2;
 
 void set_esc_power (Servo esc, int power) {
   power = constrain(power, -100, 100);
@@ -19,9 +22,11 @@ void set_esc_power (Servo esc, int power) {
 
 void setup() {
   esc_1.attach(motorPin);
+  esc_2.attach(kanenetPin);
   Serial.begin(9600);
   // Set the motor pin as an output pin
   pinMode(motorPin, OUTPUT);
+  pinMode(kanenetPin, OUTPUT);
   while (!Serial) {
     ; // wait for serial port to connect.
   }
@@ -29,6 +34,7 @@ void setup() {
 
 void loop() {
   set_esc_power(esc_1, 0);
+  set_esc_power(esc_2, 0);
   //minus goes to blue carton
   //set_esc_power(esc_1, 30);
   //delay(500);
@@ -59,6 +65,18 @@ void loop() {
     if (buffer[0] == 'B') {
       set_esc_power(esc_1, -FAST_BCK);
       delay(500);
+    }
+    //Take Kanenet down
+    if (buffer[0] == 'D') {
+      set_esc_power(esc_2, -SLOW_FWD);
+      delay(STRING_FULL_TIME);
+      set_esc_power(esc_2, 0);
+    }
+    //Take Kanenet UP
+    if (buffer[0] == 'U') {
+      set_esc_power(esc_2, SLOW_FWD);
+      delay(STRING_FULL_TIME);
+      set_esc_power(esc_2, 0);
     }
   }
 }
