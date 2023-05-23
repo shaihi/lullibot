@@ -5,7 +5,9 @@
 #define FAST_FWD 80
 #define FAST_BCK 74
 #define SLOW_BCK 16
-#define STRING_FULL_TIME 1000 //milisceonds
+#define UPDOWN 30
+#define STRING_FULL_TIME_UP 8800 //milisceonds
+#define STRING_FULL_TIME_DOWN 7500 //milisceonds
 
 const int motorPin = 9;  // Motor control pin
 const int kanenetPin = 10; //Kannent motor
@@ -68,14 +70,26 @@ void loop() {
     }
     //Take Kanenet down
     if (buffer[0] == 'D') {
-      set_esc_power(esc_2, -SLOW_FWD);
-      delay(STRING_FULL_TIME);
+      set_esc_power(esc_2, -UPDOWN);
+      delay(STRING_FULL_TIME_DOWN);
       set_esc_power(esc_2, 0);
     }
     //Take Kanenet UP
     if (buffer[0] == 'U') {
-      set_esc_power(esc_2, SLOW_FWD);
-      delay(STRING_FULL_TIME);
+      set_esc_power(esc_2, UPDOWN);
+      delay(STRING_FULL_TIME_UP);
+      set_esc_power(esc_2, 0);
+    }
+    //Take Kanenet UP
+    if (buffer[0] == 'P') {
+      set_esc_power(esc_2, UPDOWN);
+      delay(300);
+      set_esc_power(esc_2, 0);
+    }
+    //Take Kanenet UP
+    if (buffer[0] == 'L') {
+      set_esc_power(esc_2, -UPDOWN);
+      delay(300);
       set_esc_power(esc_2, 0);
     }
   }

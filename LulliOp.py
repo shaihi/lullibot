@@ -4,6 +4,7 @@
 import jetson.inference
 import jetson.utils
 import serial
+import time
 from enum import Enum
 
 
@@ -18,6 +19,9 @@ class engineCMD(Enum):
     FWD_SLOW = 3
     BCK_FAST = 4
     BCK_SLOW = 5
+    UP = 6
+    DOWN = 7
+    SLOWFWD = 8
 
 
 # Camera parameters
@@ -79,6 +83,12 @@ def sendEngineCMD(cmd, ser):
     elif cmd == engineCMD.BCK_SLOW:
         ser.write(bytes('A\n', 'utf-8'))
         traveled_distance -= slow_increment
+    elif cmd == engineCMD.UP:
+        ser.write(bytes('U\n', 'utf-8'))
+    elif cmd == engineCMD.DOWN:
+        ser.write(bytes('D\n', 'utf-8'))
+    elif cmd == engineCMD.SLOWFWD:
+        ser.write(bytes('O\n', 'utf-8'))
 
 def main():
     global movement_direction
@@ -88,12 +98,12 @@ def main():
     
    # movement_direction = movementDirection.BACKWARD  # initial state
 
-    with serial.Serial('/dev/ttyACM0', 9600, timeout=10) as ser:
+    with serial.Serial('/dev/ttyUSB0', 9600, timeout=10) as ser:
         while display.IsStreaming():
             img = camera.Capture()
             detections = net.Detect(img)
 
-            # print("ran detection on image")
+            print("ran detection on image")
 
             for detection in detections:
                 class_id = detection.ClassID
@@ -112,10 +122,16 @@ def main():
                     'Class ID: {}, Object Width: {:.2f} cm, Distance: ??? cm'.format(class_id,
                         object_width)
                 class_name = net.GetClassDesc(detection.ClassID)
-                if class_name == 'person':
+                if class_name == 'bird' or class_name == 'airplane':
                     print ('Found one! ' + class_name)
                     print ('Object width is: ' + str(object_width))
                     sendEngineCMD(engineCMD.STOP, ser)
+                    sendEngineCMD(engineCMD.SLOWFWD, ser)
+                    sendEngineCMD(engineCMD.SLOWFWD, ser)
+                    sendEngineCMD(engineCMD.SLOWFWD, ser)
+                    sendEngineCMD(engineCMD.DOWN, ser)
+                    time.sleep(6)
+                    sendEngineCMD(engineCMD.UP, ser)
                 else:
 
                 # tell the motor to continue
